@@ -4,8 +4,32 @@ const app = express();
 
 const PORT = process.env.PORT || 9090;
 
-const CUSTOMER_SERVICE_URL =
-  process.env.CUSTOMER_SERVICE_URL || "http://localhost:8080";
+function getServiceUrl(prefix, fallback) {
+  const directUrl = process.env[`${prefix}_URL`];
+
+  if (directUrl) {
+    return directUrl;
+  }
+
+  const host = process.env[`${prefix}_HOST`];
+  const port = process.env[`${prefix}_PORT`];
+
+  if (host && port) {
+    return `http://${host}:${port}`;
+  }
+
+  return fallback;
+}
+
+const CUSTOMER_SERVICE_URL = getServiceUrl(
+  "CUSTOMER_SERVICE",
+  "http://localhost:8080"
+);
+
+const PAYMENT_SERVICE_URL = getServiceUrl(
+  "PAYMENT_SERVICE",
+  "http://localhost:7070"
+);
 
 app.use(express.json());
 
@@ -35,6 +59,7 @@ app.get("/", (req, res) => {
     service: "order-service",
     status: "running",
     customerServiceUrl: CUSTOMER_SERVICE_URL,
+    paymentServiceUrl: PAYMENT_SERVICE_URL,
     demoMode: process.env.DEMO_MODE || "NOT_SET"
   });
 });
@@ -47,7 +72,10 @@ app.get("/health", (req, res) => {
 
 app.get("/orders", async (req, res) => {
   try {
-    const customerResponse = await fetch(`${CUSTOMER_SERVICE_URL}/customers`);
+    const [customerResponse, paymentResponse] = await Promise.all([
+      fetch(`${CUSTOMER_SERVICE_URL}/customers`),
+      fetch(`${PAYMENT_SERVICE_URL}/payments`)
+    ]);
 
     if (!customerResponse.ok) {
       return res.status(502).json({
@@ -56,28 +84,42 @@ app.get("/orders", async (req, res) => {
       });
     }
 
+    if (!paymentResponse.ok) {
+      return res.status(502).json({
+        error: "Failed to call payment-service",
+        status: paymentResponse.status
+      });
+    }
+
     const customerData = await customerResponse.json();
+    const paymentData = await paymentResponse.json();
 
     const enrichedOrders = orders.map((order) => {
       const customer = customerData.customers.find(
         (item) => item.id === order.customerId
       );
 
+      const payment = paymentData.payments.find(
+        (item) => item.orderId === order.id
+      );
+
       return {
         ...order,
-        customer: customer || null
+        customer: customer || null,
+        payment: payment || null
       };
     });
 
     res.json({
       service: "order-service",
-      dependency: "customer-service",
+      dependencies: ["customer-service", "payment-service"],
       orders: enrichedOrders
     });
   } catch (error) {
     res.status(500).json({
-      error: "Could not connect to customer-service",
+      error: "Could not connect to dependencies",
       customerServiceUrl: CUSTOMER_SERVICE_URL,
+      paymentServiceUrl: PAYMENT_SERVICE_URL,
       details: error.message
     });
   }
@@ -93,21 +135,27 @@ app.get("/orders/:id", async (req, res) => {
   }
 
   try {
-    const customerResponse = await fetch(
-      `${CUSTOMER_SERVICE_URL}/customers/${order.customerId}`
-    );
+    const [customerResponse, paymentResponse] = await Promise.all([
+      fetch(`${CUSTOMER_SERVICE_URL}/customers/${order.customerId}`),
+      fetch(`${PAYMENT_SERVICE_URL}/payments/${order.id}`)
+    ]);
 
     const customer = customerResponse.ok
       ? await customerResponse.json()
       : null;
 
+    const payment = paymentResponse.ok
+      ? await paymentResponse.json()
+      : null;
+
     res.json({
       ...order,
-      customer
+      customer,
+      payment
     });
   } catch (error) {
     res.status(500).json({
-      error: "Could not connect to customer-service",
+      error: "Could not connect to dependencies",
       details: error.message
     });
   }
@@ -116,4 +164,5 @@ app.get("/orders/:id", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`order-service running on port ${PORT}`);
   console.log(`Using customer-service at ${CUSTOMER_SERVICE_URL}`);
+  console.log(`Using payment-service at ${PAYMENT_SERVICE_URL}`);
 });

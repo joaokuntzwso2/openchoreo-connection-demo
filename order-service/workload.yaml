@@ -21,8 +21,9 @@ dependencies:
         address: CUSTOMER_SERVICE_URL
         host: CUSTOMER_SERVICE_HOST
 
-traits:
-  order-service-runtime-trait:
-    type: ClusterTrait
-    properties:
-      demoMode: OPENCHOREO_TRAIT
+    - component: payment-service
+      name: api
+      visibility: project
+      envBindings:
+        address: PAYMENT_SERVICE_URL
+        host: PAYMENT_SERVICE_HOST

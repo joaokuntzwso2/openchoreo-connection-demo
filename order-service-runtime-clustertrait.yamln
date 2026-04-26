@@ -1,0 +1,55 @@
+apiVersion: openchoreo.dev/v1alpha1
+kind: ClusterTrait
+metadata:
+  name: order-service-runtime-trait
+spec:
+  patches:
+    - target:
+        group: apps
+        version: v1
+        kind: Deployment
+      targetPlane: dataplane
+      operations:
+        - op: add
+          path: /spec/template/spec/containers/0/env/-
+          value:
+            name: DEMO_MODE
+            value: OPENCHOREO_TRAITapiVersion: openchoreo.dev/v1alpha1
+kind: ClusterTrait
+metadata:
+  name: order-service-runtime-trait
+spec:
+  patches:
+    - target:
+        kind: Deployment
+      patch: |
+        spec:
+          template:
+            spec:
+              containers:
+                - name: main
+              apiVersion: openchoreo.dev/v1alpha1
+kind: ClusterTrait
+metadata:
+  name: order-service-runtime-trait
+spec:
+  environmentConfigs:
+    openAPIV3Schema:
+      type: object
+      properties:
+        demoMode:
+          type: string
+          default: OPENCHOREO_TRAIT
+
+  patches:
+    - target:
+        group: apps
+        version: v1
+        kind: Deployment
+      targetPlane: dataplane
+      operations:
+        - op: add
+          path: /spec/template/spec/containers[?(@.name=='main')]/env/-
+          value:
+            name: DEMO_MODE
+            value: ${environmentConfigs.demoMode}

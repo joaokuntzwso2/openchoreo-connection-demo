@@ -1,0 +1,13 @@
+apiVersion: openchoreo.dev/v1alpha1
+
+metadata:
+  name: payment-service
+
+endpoints:
+  - name: api
+    visibility:
+      - project
+    port: 7070
+    type: HTTP
+    basePath: /
+    displayName: Payment API

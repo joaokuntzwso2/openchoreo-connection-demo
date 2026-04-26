@@ -1,0 +1,23 @@
+apiVersion: openchoreo.dev/v1alpha1
+kind: ClusterTrait
+metadata:
+  name: order-service-runtime-trait
+spec:
+  parameters:
+    openAPIV3Schema:
+      type: object
+      properties:
+        replicas:
+          type: integer
+          default: 3
+
+  patches:
+    - target:
+        group: apps
+        version: v1
+        kind: Deployment
+      targetPlane: dataplane
+      operations:
+        - op: replace
+          path: /spec/replicas
+          value: ${parameters.replicas}
