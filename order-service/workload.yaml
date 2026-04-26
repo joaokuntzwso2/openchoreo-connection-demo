@@ -20,5 +20,3 @@ dependencies:
       envBindings:
         address: CUSTOMER_SERVICE_URL
         host: CUSTOMER_SERVICE_HOST
-        port: CUSTOMER_SERVICE_PORT
-        basePath: CUSTOMER_SERVICE_BASE_PATH
