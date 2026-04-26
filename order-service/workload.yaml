@@ -1,0 +1,24 @@
+apiVersion: openchoreo.dev/v1alpha1
+
+metadata:
+  name: order-service
+
+endpoints:
+  - name: api
+    visibility:
+      - external
+    port: 9090
+    type: HTTP
+    basePath: /orders
+    displayName: Order API
+
+dependencies:
+  endpoints:
+    - component: customer-service
+      name: api
+      visibility: project
+      envBindings:
+        address: CUSTOMER_SERVICE_URL
+        host: CUSTOMER_SERVICE_HOST
+        port: CUSTOMER_SERVICE_PORT
+        basePath: CUSTOMER_SERVICE_BASE_PATH
