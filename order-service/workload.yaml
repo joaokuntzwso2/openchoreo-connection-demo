@@ -9,7 +9,7 @@ endpoints:
       - external
     port: 9090
     type: HTTP
-    basePath: /orders
+    basePath: /
     displayName: Order API
 
 dependencies:
