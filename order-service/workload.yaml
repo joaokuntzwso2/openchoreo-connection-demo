@@ -20,6 +20,9 @@ dependencies:
       envBindings:
         address: CUSTOMER_SERVICE_URL
         host: CUSTOMER_SERVICE_HOST
-        
+
 traits:
-  - name: order-service-runtime-trait
+  order-service-runtime-trait:
+    type: ClusterTrait
+    properties:
+      demoMode: OPENCHOREO_TRAIT
