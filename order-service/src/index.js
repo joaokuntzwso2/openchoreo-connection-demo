@@ -21,14 +21,27 @@ function getServiceUrl(prefix, fallback) {
   return fallback;
 }
 
-const CUSTOMER_SERVICE_URL = getServiceUrl(
-  "CUSTOMER_SERVICE",
-  "http://localhost:8080"
+function normalizeBaseUrl(url) {
+  return url.replace(/\/$/, "");
+}
+
+function joinUrl(baseUrl, path = "") {
+  const cleanBaseUrl = normalizeBaseUrl(baseUrl);
+  const cleanPath = path.replace(/^\//, "");
+
+  if (!cleanPath) {
+    return cleanBaseUrl;
+  }
+
+  return `${cleanBaseUrl}/${cleanPath}`;
+}
+
+const CUSTOMER_SERVICE_URL = normalizeBaseUrl(
+  getServiceUrl("CUSTOMER_SERVICE", "http://localhost:8080/customers")
 );
 
-const PAYMENT_SERVICE_URL = getServiceUrl(
-  "PAYMENT_SERVICE",
-  "http://localhost:7070"
+const PAYMENT_SERVICE_URL = normalizeBaseUrl(
+  getServiceUrl("PAYMENT_SERVICE", "http://localhost:7070")
 );
 
 app.use(express.json());
@@ -72,14 +85,18 @@ app.get("/health", (req, res) => {
 
 app.get("/orders", async (req, res) => {
   try {
+    const customerUrl = joinUrl(CUSTOMER_SERVICE_URL);
+    const paymentUrl = joinUrl(PAYMENT_SERVICE_URL, "payments");
+
     const [customerResponse, paymentResponse] = await Promise.all([
-      fetch(`${CUSTOMER_SERVICE_URL}/customers`),
-      fetch(`${PAYMENT_SERVICE_URL}/payments`)
+      fetch(customerUrl),
+      fetch(paymentUrl)
     ]);
 
     if (!customerResponse.ok) {
       return res.status(502).json({
         error: "Failed to call customer-service",
+        calledUrl: customerUrl,
         status: customerResponse.status
       });
     }
@@ -87,6 +104,7 @@ app.get("/orders", async (req, res) => {
     if (!paymentResponse.ok) {
       return res.status(502).json({
         error: "Failed to call payment-service",
+        calledUrl: paymentUrl,
         status: paymentResponse.status
       });
     }
@@ -113,6 +131,8 @@ app.get("/orders", async (req, res) => {
     res.json({
       service: "order-service",
       dependencies: ["customer-service", "payment-service"],
+      customerServiceUrl: CUSTOMER_SERVICE_URL,
+      paymentServiceUrl: PAYMENT_SERVICE_URL,
       orders: enrichedOrders
     });
   } catch (error) {
@@ -135,9 +155,12 @@ app.get("/orders/:id", async (req, res) => {
   }
 
   try {
+    const customerUrl = joinUrl(CUSTOMER_SERVICE_URL, order.customerId);
+    const paymentUrl = joinUrl(PAYMENT_SERVICE_URL, `payments/${order.id}`);
+
     const [customerResponse, paymentResponse] = await Promise.all([
-      fetch(`${CUSTOMER_SERVICE_URL}/customers/${order.customerId}`),
-      fetch(`${PAYMENT_SERVICE_URL}/payments/${order.id}`)
+      fetch(customerUrl),
+      fetch(paymentUrl)
     ]);
 
     const customer = customerResponse.ok
@@ -151,11 +174,17 @@ app.get("/orders/:id", async (req, res) => {
     res.json({
       ...order,
       customer,
-      payment
+      payment,
+      calledUrls: {
+        customerUrl,
+        paymentUrl
+      }
     });
   } catch (error) {
     res.status(500).json({
       error: "Could not connect to dependencies",
+      customerServiceUrl: CUSTOMER_SERVICE_URL,
+      paymentServiceUrl: PAYMENT_SERVICE_URL,
       details: error.message
     });
   }
