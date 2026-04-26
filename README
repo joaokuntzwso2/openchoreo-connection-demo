@@ -1,0 +1,52 @@
+# OpenChoreo Connection Demo
+
+Demo com dois serviços JavaScript/Node.js para demonstrar Connections no OpenChoreo.
+
+## Serviços
+
+### customer-service
+
+Expõe uma API HTTP de clientes.
+
+Endpoint:
+
+```http
+GET /customers
+order-service
+
+Expõe uma API HTTP de pedidos e consome o customer-service.
+
+Endpoint:
+
+GET /orders
+
+O order-service lê a URL do customer-service pela variável:
+
+CUSTOMER_SERVICE_URL
+
+Essa variável pode ser configurada manualmente ou injetada pelo OpenChoreo através de uma Connection.
+
+Rodando localmente
+Customer Service
+cd customer-service
+npm install
+npm start
+
+Executa em:
+
+http://localhost:8080
+Order Service
+
+Em outro terminal:
+
+cd order-service
+npm install
+CUSTOMER_SERVICE_URL=http://localhost:8080 npm start
+
+Executa em:
+
+http://localhost:9090
+
+Teste:
+
+curl http://localhost:9090/orders
