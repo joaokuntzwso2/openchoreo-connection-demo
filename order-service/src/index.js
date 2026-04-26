@@ -34,7 +34,8 @@ app.get("/", (req, res) => {
   res.json({
     service: "order-service",
     status: "running",
-    customerServiceUrl: CUSTOMER_SERVICE_URL
+    customerServiceUrl: CUSTOMER_SERVICE_URL,
+    demoMode: process.env.DEMO_MODE || "NOT_SET"
   });
 });
 
