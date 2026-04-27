@@ -3,6 +3,10 @@ kind: Component
 metadata:
   name: openchoreo-connection-demo
   description: OpenChoreo demo for components, connections, traits, autoscaling, deployment tracks, and managed authentication.
+  annotations:
+    openchoreo.io/component: order-service
+    openchoreo.io/project: connection-project
+    openchoreo.io/namespace: connection-demo
 spec:
   type: service
   owner: user:default/admin
