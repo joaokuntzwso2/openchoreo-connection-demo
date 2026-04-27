@@ -1,0 +1,19 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayExtension
+metadata:
+  name: thunder-jwt
+  namespace: openchoreo-data-plane
+spec:
+  jwt:
+    validationMode: Strict
+    providers:
+      - name: thunder
+        issuer: http://thunder.openchoreo.localhost
+        audiences:
+          - openchoreo
+        jwks:
+          remote:
+            url: http://thunder-service.thunder.svc.cluster.local:8090/oauth2/jwks
+            backendRef:
+              name: thunder-jwks
+              port: 8090

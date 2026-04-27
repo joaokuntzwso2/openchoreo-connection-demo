@@ -1,0 +1,15 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: GatewayExtension
+metadata:
+  name: thunder-jwt
+  namespace: dp-connection-de-connection-pr-development-b886e208
+spec:
+  jwt:
+    validationMode: Strict
+    providers:
+      - name: thunder
+        issuer: http://thunder.openchoreo.localhost:8080
+        jwks:
+          local:
+            configMapRef:
+              name: thunder-jwks-local

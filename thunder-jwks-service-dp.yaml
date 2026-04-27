@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thunder-jwks
+  namespace: dp-connection-de-connection-pr-development-b886e208
+spec:
+  type: ExternalName
+  externalName: thunder-service.thunder.svc.cluster.local
+  ports:
+    - name: http
+      port: 8090
+      targetPort: 8090

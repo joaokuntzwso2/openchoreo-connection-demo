@@ -14,9 +14,6 @@ metadata:
       url: http://development-connection-demo.openchoreoapis.localhost:19080/order-service-beta-api
     - title: Customer Service API
       url: http://development-connection-demo.openchoreoapis.localhost:19080/customer-service-api
-  annotations:
-    github.com/project-slug: joaokuntzwso2/openchoreo-connection-demo
-    backstage.io/techdocs-ref: dir:.
   tags:
     - openchoreo
     - kubernetes

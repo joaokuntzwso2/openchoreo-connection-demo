@@ -1,0 +1,11 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: Backend
+metadata:
+  name: thunder-jwks
+  namespace: openchoreo-data-plane
+spec:
+  type: Static
+  static:
+    hosts:
+      - host: thunder-service.thunder.svc.cluster.local
+        port: 8090

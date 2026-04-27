@@ -1,0 +1,14 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: TrafficPolicy
+metadata:
+  name: order-service-beta-auth
+  namespace: dp-connection-de-connection-pr-development-b886e208
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: order-service-beta-api-884234b9
+
+  jwtAuth:
+    extensionRef:
+      name: thunder-jwt
