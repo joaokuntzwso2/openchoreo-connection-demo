@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: order-service
+  description: OpenChoreo Order Service component for the connection demo.
+  annotations:
+    openchoreo.io/component: order-service
+    openchoreo.io/project: connection-project
+    openchoreo.io/namespace: connection-demo
+spec:
+  type: service
+  owner: guest
+  lifecycle: experimental
