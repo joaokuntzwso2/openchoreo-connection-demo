@@ -9,5 +9,5 @@ metadata:
     openchoreo.io/namespace: connection-demo
 spec:
   type: service
-  owner: guest
+  owner: guest/admin
   lifecycle: experimental
