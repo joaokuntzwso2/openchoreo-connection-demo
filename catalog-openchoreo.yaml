@@ -4,7 +4,7 @@ metadata:
   name: connection-project
   description: OpenChoreo project for the connection demo.
 spec:
-  owner: user:default/admin
+  owner: guest
 
 ---
 apiVersion: backstage.io/v1alpha1
@@ -18,6 +18,6 @@ metadata:
     openchoreo.io/namespace: connection-demo
 spec:
   type: service
-  owner: user:default/admin
+  owner: guest
   lifecycle: experimental
   system: connection-project
