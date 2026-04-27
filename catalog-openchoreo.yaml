@@ -1,17 +1,8 @@
 apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: connection-project
-  description: OpenChoreo project for the connection demo.
-spec:
-  owner: guest
-
----
-apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: openchoreo-connection-demo
-  description: OpenChoreo demo for components, connections, traits, autoscaling, deployment tracks, and managed authentication.
+  name: order-service
+  description: OpenChoreo Order Service component for the connection demo.
   annotations:
     openchoreo.io/component: order-service
     openchoreo.io/project: connection-project
