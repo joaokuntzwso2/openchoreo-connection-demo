@@ -71,6 +71,8 @@ app.get("/", (req, res) => {
   res.json({
     service: "order-service",
     status: "running",
+    version: "v2-beta",
+    track: process.env.DEPLOYMENT_TRACK || "beta",
     customerServiceUrl: CUSTOMER_SERVICE_URL,
     paymentServiceUrl: PAYMENT_SERVICE_URL,
     demoMode: process.env.DEMO_MODE || "NOT_SET"
