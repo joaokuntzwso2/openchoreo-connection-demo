@@ -1,184 +1,29 @@
 apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: connection-demo
-  title: OpenChoreo Connection Demo
-  description: Demonstrates service composition, deployment tracks, autoscaling, and managed authentication
-spec:
-  owner: user:default/guest
-
----
-apiVersion: backstage.io/v1alpha1
-kind: API
-metadata:
-  name: customer-service-api
-  title: Customer Service API
-  description: API for retrieving customer information
-  tags:
-    - customer
-    - api
-    - nodejs
-spec:
-  type: openapi
-  lifecycle: experimental
-  owner: user:default/guest
-  system: connection-demo
-  definition: |
-    openapi: 3.0.0
-    info:
-      title: Customer Service API
-      version: 1.0.0
-    paths:
-      /customers:
-        get:
-          summary: Get customers
-
----
-apiVersion: backstage.io/v1alpha1
-kind: API
-metadata:
-  name: payment-service-api
-  title: Payment Service API
-  description: API for payment status retrieval
-  tags:
-    - payment
-    - api
-    - nodejs
-spec:
-  type: openapi
-  lifecycle: experimental
-  owner: user:default/guest
-  system: connection-demo
-  definition: |
-    openapi: 3.0.0
-    info:
-      title: Payment Service API
-      version: 1.0.0
-    paths:
-      /payments:
-        get:
-          summary: Get payments
-
----
-apiVersion: backstage.io/v1alpha1
-kind: API
-metadata:
-  name: order-service-api
-  title: Order Service API
-  description: API aggregating orders, customers, and payments
-  tags:
-    - orders
-    - aggregation
-    - api
-spec:
-  type: openapi
-  lifecycle: experimental
-  owner: user:default/guest
-  system: connection-demo
-  definition: |
-    openapi: 3.0.0
-    info:
-      title: Order Service API
-      version: 1.0.0
-    paths:
-      /orders:
-        get:
-          summary: Get enriched orders
-
----
-apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: customer-service
-  title: Customer Service
-  description: Provides customer data for internal services
+  name: openchoreo-connection-demo
+  description: |
+    Demo application for OpenChoreo showing services, connections, deployment tracks,
+    autoscaling traits, and managed authentication with JWT.
+  links:
+    - title: GitHub Repository
+      url: https://github.com/joaokuntzwso2/openchoreo-connection-demo
+    - title: Stable Order Service
+      url: http://development-connection-demo.openchoreoapis.localhost:19080/order-service-api
+    - title: Beta Order Service
+      url: http://development-connection-demo.openchoreoapis.localhost:19080/order-service-beta-api
+    - title: Customer Service API
+      url: http://development-connection-demo.openchoreoapis.localhost:19080/customer-service-api
   annotations:
     github.com/project-slug: joaokuntzwso2/openchoreo-connection-demo
+    backstage.io/techdocs-ref: dir:.
   tags:
-    - nodejs
     - openchoreo
-    - customer
-    - internal-api
-spec:
-  type: service
-  lifecycle: production
-  owner: user:default/guest
-  system: connection-demo
-  providesApis:
-    - customer-service-api
-
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: payment-service
-  title: Payment Service
-  description: Provides payment status and payment method information
-  annotations:
-    github.com/project-slug: joaokuntzwso2/openchoreo-connection-demo
-  tags:
+    - kubernetes
     - nodejs
-    - payment
-    - internal-api
+    - demo
+    - microservices
 spec:
   type: service
-  lifecycle: production
-  owner: user:default/guest
-  system: connection-demo
-  providesApis:
-    - payment-service-api
-
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: order-service
-  title: Order Service
-  description: Aggregates customer-service and payment-service into business-ready order objects
-  annotations:
-    github.com/project-slug: joaokuntzwso2/openchoreo-connection-demo
-  tags:
-    - nodejs
-    - aggregation
-    - gateway
-    - external-api
-spec:
-  type: service
-  lifecycle: production
-  owner: user:default/guest
-  system: connection-demo
-  providesApis:
-    - order-service-api
-  dependsOn:
-    - component:default/customer-service
-    - component:default/payment-service
-  consumesApis:
-    - api:default/customer-service-api
-    - api:default/payment-service-api
-
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: order-service-beta
-  title: Order Service Beta
-  description: Beta deployment track for Order Service protected by JWT gateway authentication
-  annotations:
-    github.com/project-slug: joaokuntzwso2/openchoreo-connection-demo
-  tags:
-    - beta
-    - deployment-track
-    - jwt
-    - gateway-auth
-    - managed-authentication
-spec:
-  type: service
+  owner: guest
   lifecycle: experimental
-  owner: user:default/guest
-  system: connection-demo
-  dependsOn:
-    - component:default/customer-service
-    - component:default/payment-service
-  consumesApis:
-    - api:default/customer-service-api
-    - api:default/payment-service-api
