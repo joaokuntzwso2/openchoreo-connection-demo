@@ -2,24 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: openchoreo-connection-demo
-  description: |
-    Demo application for OpenChoreo showing services, connections, deployment tracks,
-    autoscaling traits, and managed authentication with JWT.
-  links:
-    - title: GitHub Repository
-      url: https://github.com/joaokuntzwso2/openchoreo-connection-demo
-    - title: Stable Order Service
-      url: http://development-connection-demo.openchoreoapis.localhost:19080/order-service-api
-    - title: Beta Order Service
-      url: http://development-connection-demo.openchoreoapis.localhost:19080/order-service-beta-api
-    - title: Customer Service API
-      url: http://development-connection-demo.openchoreoapis.localhost:19080/customer-service-api
-  tags:
-    - openchoreo
-    - kubernetes
-    - nodejs
-    - demo
-    - microservices
+  description: OpenChoreo demo for components, connections, traits, autoscaling, deployment tracks, and managed authentication.
 spec:
   type: service
   owner: guest
