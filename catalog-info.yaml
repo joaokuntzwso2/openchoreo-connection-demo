@@ -7,3 +7,4 @@ spec:
   type: service
   owner: guest
   lifecycle: experimental
+  system: connection-project
