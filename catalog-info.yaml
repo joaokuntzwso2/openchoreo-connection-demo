@@ -1,22 +1,11 @@
 apiVersion: backstage.io/v1alpha1
-kind: Domain
-metadata:
-  name: commerce-demo
-  title: Commerce Demo Domain
-  description: Domain for the OpenChoreo connection demo ecosystem
-spec:
-  owner: group:default/platform-team
-
----
-apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: connection-demo
   title: OpenChoreo Connection Demo
   description: Demonstrates service composition, deployment tracks, autoscaling, and managed authentication
 spec:
-  owner: group:default/platform-team
-  domain: commerce-demo
+  owner: user:default/guest
 
 ---
 apiVersion: backstage.io/v1alpha1
@@ -32,7 +21,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   definition: |
     openapi: 3.0.0
@@ -58,7 +47,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   definition: |
     openapi: 3.0.0
@@ -84,7 +73,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   definition: |
     openapi: 3.0.0
@@ -113,7 +102,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   providesApis:
     - customer-service-api
@@ -134,7 +123,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   providesApis:
     - payment-service-api
@@ -156,7 +145,7 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   providesApis:
     - order-service-api
@@ -164,8 +153,8 @@ spec:
     - component:default/customer-service
     - component:default/payment-service
   consumesApis:
-    - customer-service-api
-    - payment-service-api
+    - api:default/customer-service-api
+    - api:default/payment-service-api
 
 ---
 apiVersion: backstage.io/v1alpha1
@@ -185,11 +174,11 @@ metadata:
 spec:
   type: service
   lifecycle: experimental
-  owner: group:default/platform-team
+  owner: user:default/guest
   system: connection-demo
   dependsOn:
     - component:default/customer-service
     - component:default/payment-service
   consumesApis:
-    - customer-service-api
-    - payment-service-api
+    - api:default/customer-service-api
+    - api:default/payment-service-api
